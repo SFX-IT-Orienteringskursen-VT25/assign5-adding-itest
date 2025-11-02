@@ -1,6 +1,6 @@
-# assign4-adding-database
+# assign5-adding-itest
 The assignment was introduced in Class #10. In the link you can find the slides from the presentation as well as a recording of the class.
-<link will be added after the class has been held>
+> link will be added after I've added a separate recording
 
 Example of integration tests. Sets up SQL server using docker.
 https://github.com/SFX-IT-Orienteringskursen-VT25/integration-test-example
