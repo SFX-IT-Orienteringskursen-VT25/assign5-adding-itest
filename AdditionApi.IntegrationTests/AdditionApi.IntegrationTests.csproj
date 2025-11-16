@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\assign5-adding-itest\AdditionApi.csproj" />
+		<ProjectReference Include="..\AdditionApi.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

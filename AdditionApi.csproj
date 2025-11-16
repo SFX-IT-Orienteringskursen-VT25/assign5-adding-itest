@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
@@ -8,7 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="AdditionApi.IntegrationTests.csproj" />
+	  <Compile Remove="AdditionApi.IntegrationTests\**" />
+	  <Content Remove="AdditionApi.IntegrationTests\**" />
+	  <EmbeddedResource Remove="AdditionApi.IntegrationTests\**" />
+	  <None Remove="AdditionApi.IntegrationTests\**" />
 	</ItemGroup>
 
 	<ItemGroup>
