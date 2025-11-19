@@ -1,0 +1,14 @@
+@host = http://localhost:5262
+
+### Save item (setItem)
+POST {{host}}/storage
+Content-Type: application/json
+
+{
+  "key": "username",
+  "value": "Morihei Ueshiba"
+}
+
+### Get item (getItem)
+GET {{host}}/storage/username
+Accept: application/json

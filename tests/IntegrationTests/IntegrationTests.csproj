@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RestoreForceEvaluate>true</RestoreForceEvaluate>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  
+
+  <ItemGroup>
+  <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
+  <PackageReference Include="Testcontainers" Version="3.9.0" />
+  <PackageReference Include="Testcontainers.MsSql" Version="3.9.0" />
+  <PackageReference Include="xunit" Version="2.9.0" />
+  <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" />
+  <PackageReference Include="Azure.Core" Version="1.44.1" />
+  <PackageReference Include="Azure.Identity" Version="1.13.0" />
+  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+  
+</ItemGroup>
+
+
+
+<ItemGroup>
+  <!-- принудительное обновление/перекрытие транзитивных ссылок -->
+  <PackageReference Update="Azure.Core" Version="1.44.1" />
+  <PackageReference Update="Azure.Identity" Version="1.13.0" />
+</ItemGroup>
+
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Server\AdditionApi\AdditionApi.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
