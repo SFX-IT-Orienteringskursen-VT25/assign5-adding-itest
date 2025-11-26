@@ -6,5 +6,5 @@ namespace IntegrationTests;
 [CollectionDefinition("IntegrationTests collection")]
 public class IntegrationTestsCollection : ICollectionFixture<SqlTestContainerFixture>
 {
-    // Пустой класс: связывает фикстуру с коллекцией
+    // Empty class: Associates a fixture with a collection
 }

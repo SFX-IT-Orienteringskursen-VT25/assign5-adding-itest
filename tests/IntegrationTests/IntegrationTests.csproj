@@ -7,13 +7,12 @@
     <IsPackable>false</IsPackable>
     <RestoreForceEvaluate>true</RestoreForceEvaluate>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   
 
   <ItemGroup>
   <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
-  <PackageReference Include="Testcontainers" Version="3.9.0" />
   <PackageReference Include="Testcontainers.MsSql" Version="3.9.0" />
   <PackageReference Include="xunit" Version="2.9.0" />
   <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" />
@@ -26,7 +25,7 @@
 
 
 <ItemGroup>
-  <!-- принудительное обновление/перекрытие транзитивных ссылок -->
+  <!-- forced update/overlapping of transitive links -->
   <PackageReference Update="Azure.Core" Version="1.44.1" />
   <PackageReference Update="Azure.Identity" Version="1.13.0" />
 </ItemGroup>
@@ -39,6 +38,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Server\AdditionApi\AdditionApi.csproj" />
   </ItemGroup>
+
+
 
 </Project>
 

@@ -13,10 +13,10 @@ public class EntitiesTests
 
     public EntitiesTests(SqlTestContainerFixture sqlFixture)
     {
-        // фабрика должна получать ссылку на фикстуру
-        _factory = new CustomWebApplicationFactory(sqlFixture);
+        _factory = new CustomWebApplicationFactory(sqlFixture.Container);
         _client = _factory.CreateClient();
     }
+
 
     [Fact]
     public async Task GetRootEndpoint_ShouldReturnOk()
@@ -24,7 +24,7 @@ public class EntitiesTests
         var resp = await _client.GetAsync("/");
         resp.EnsureSuccessStatusCode();
         var content = await resp.Content.ReadAsStringAsync();
-        Assert.Contains("Hello", content); // или точная проверка
+        Assert.Contains("Hello", content); 
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class EntitiesTests
         Assert.Equal(5, sum);
     }
 
-    // Тесты для твоего StorageController (пример)
+    // Теst StorageController 
     [Fact]
     public async Task Storage_Post_Get_ShouldReturnSavedValue()
     {
@@ -46,8 +46,10 @@ public class EntitiesTests
 
         var get = await _client.GetAsync($"/storage/{item.Key}");
         get.EnsureSuccessStatusCode();
-        var stored = await get.Content.ReadFromJsonAsync<StorageItemDto>()!;
-        Assert.Equal(item.Value, stored.Value);
+        var stored = await get.Content.ReadFromJsonAsync<StorageItemDto>();
+        Assert.NotNull(stored);
+        Assert.Equal(item.Value, stored!.Value);
+
     }
 
     [Fact]
@@ -57,6 +59,6 @@ public class EntitiesTests
         Assert.Equal(HttpStatusCode.NotFound, get.StatusCode);
     }
 
-    // DTO для парсинга результата (создай внутри файла или вынеси)
+    // DTO to parse the result
     private record StorageItemDto(string Key, string Value);
 }
