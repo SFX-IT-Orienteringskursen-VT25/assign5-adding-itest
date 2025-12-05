@@ -38,3 +38,4 @@ app.MapGet("/", () => "Hello World!");
 app.Run();
 public record SetItemRequest(string? Value);
 
+public partial class Program { }
