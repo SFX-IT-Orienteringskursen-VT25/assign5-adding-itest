@@ -1,0 +1,15 @@
+@AdditionApi_HostAddress = http://localhost:5262
+
+PUT {{AdditionApi_HostAddress}}/localStorage/setItem/key1
+Content-Type: application/json
+
+{
+  "value": "exampleValue"
+}
+
+
+###
+GET {{AdditionApi_HostAddress}}/localStorage/getItem/key1
+Accept: application/json
+
+###
