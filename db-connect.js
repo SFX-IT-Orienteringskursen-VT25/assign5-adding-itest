@@ -1,11 +1,11 @@
 import sql from "mssql";
-import { config } from "./db.js";
+import { getConfig } from "./db.js";
 
 export async function connectWithRetry(retries = 10, delay = 3000) {
     while (retries > 0) {
         try {
             console.log(`Attempting MSSQL connection... (${retries} retries left)`);
-            const pool = await sql.connect(config);
+            const pool = await sql.connect(getConfig());
 
             console.log("✔ MSSQL connected");
             return pool;

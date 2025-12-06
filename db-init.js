@@ -1,26 +1,30 @@
 import sql from "mssql";
-import { config } from "./db.js";
+import { getConfig } from "./db.js";
 
-const masterConfig = {
-    ...config,
-};
+function getMasterConfig() {
+  return {
+    ...getConfig(),
+    database: 'master',
+  };
+}
 
-async function initDb() {
-    try {
-        const pool = await sql.connect(masterConfig);
+export async function initDb() {
+  try {
+    const config = getConfig();
+    const pool = await sql.connect(getMasterConfig());
 
-        await pool.request().query(`
+    await pool.request().query(`
       IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = '${process.env.DB_NAME}')
       BEGIN
         CREATE DATABASE ${process.env.DB_NAME};
       END
     `);
 
-        console.log(`✔ Database '${process.env.DB_NAME}' is ready.`);
+    console.log(`✔ Database '${process.env.DB_NAME}' is ready.`);
 
-        const appPool = await sql.connect(config);
+    const appPool = await sql.connect(getConfig());
 
-        await appPool.request().query(`
+    await appPool.request().query(`
       IF NOT EXISTS (
         SELECT * FROM sysobjects WHERE name='buckets' AND xtype='U'
       )
@@ -32,7 +36,7 @@ async function initDb() {
       );
     `);
 
-        await appPool.request().query(`
+    await appPool.request().query(`
       IF NOT EXISTS (
         SELECT * FROM sysobjects WHERE name='bucket_entries' AND xtype='U'
       )
@@ -47,13 +51,14 @@ async function initDb() {
       );
     `);
 
-        console.log("✔ All required tables created.");
+    console.log("✔ All required tables created.");
 
-    } catch (err) {
-        console.error("DB Init Error:", err);
-    } finally {
-        sql.close();
-    }
+  } catch (err) {
+    console.error("DB Init Error:", err);
+    throw err;
+  }
 }
 
-initDb();
+if (process.env.NODE_ENV !== "test") {
+  initDb();
+}
