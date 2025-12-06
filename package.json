@@ -4,7 +4,10 @@
   "description": "A simple addition API with database integration",
   "main": "index.js",
   "scripts": {
-    "test": "vitest",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "NODE_ENV=test vitest --run --exclude '**/api.integration.test.js'",
+    "test:integration": "NODE_ENV=test vitest --run tests/api.integration.test.js",
+    "test:watch": "NODE_ENV=test vitest",
     "start": "node server.js",
     "dev": "nodemon --watch server.js server.js"
   },
