@@ -130,3 +130,5 @@ Thumbs.db
 /.vs
 
 .npmrc
+
+.env
