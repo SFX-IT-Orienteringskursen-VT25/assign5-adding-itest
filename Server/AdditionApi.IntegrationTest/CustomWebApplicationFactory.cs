@@ -14,7 +14,7 @@ public class CustomWebApplicationFactory(MsSqlContainer container) : WebApplicat
             configuration.AddInMemoryCollection(
                 new Dictionary<string, string?>
                 {
-                    ["ConnectionStrings:DefaultMsSqlConnection"] = _container.GetConnectionString()
+                    ["ConnectionStrings:DefaultConnection"] = _container.GetConnectionString()
                 }
             );
         });
