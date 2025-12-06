@@ -1,14 +1,11 @@
 import { getDb, sql } from './db.js';
 import { normalizeToNumbers } from './utils.js';
 
-const DB = process.env.DB_NAME || 'appdb';
-
 export async function getBucketDb(key) {
   const pool = await getDb();
   const result = await pool.request()
     .input('key', sql.NVarChar(256), key)
     .query(`
-      USE ${DB};
       SELECT [sum] FROM dbo.buckets WHERE [key] = @key;
       SELECT CAST([value] AS DECIMAL(18,4)) AS value
       FROM dbo.bucket_entries WHERE [key] = @key ORDER BY id;
@@ -27,7 +24,6 @@ export async function getBucketDb(key) {
 export async function getAllBucketsDb() {
   const pool = await getDb();
   const result = await pool.request().query(`
-    USE ${DB};
     SELECT [key], [sum] FROM dbo.buckets ORDER BY [key];
   `);
 
@@ -52,7 +48,6 @@ export async function appendNumbersDb(key, incoming) {
     await new sql.Request(tx)
       .input('key', sql.NVarChar(256), key)
       .query(`
-        USE ${DB};
         IF NOT EXISTS (SELECT 1 FROM dbo.buckets WHERE [key] = @key)
           INSERT dbo.buckets([key],[sum]) VALUES(@key, 0);
       `);
@@ -64,7 +59,6 @@ export async function appendNumbersDb(key, incoming) {
         .input('key', sql.NVarChar(256), key)
         .input('val', sql.Decimal(18, 4), n)
         .query(`
-          USE ${DB};
           INSERT dbo.bucket_entries([key],[value]) VALUES(@key, @val);
         `);
     }
@@ -73,7 +67,6 @@ export async function appendNumbersDb(key, incoming) {
       .input('key', sql.NVarChar(256), key)
       .input('delta', sql.Decimal(18, 4), delta)
       .query(`
-        USE ${DB};
         UPDATE dbo.buckets
           SET [sum] = [sum] + @delta, updated_at = SYSUTCDATETIME()
         WHERE [key] = @key;
