@@ -1,0 +1,19 @@
+@AdditionApi_HostAddress = http://localhost:5262
+@key = name
+
+### Default api
+GET {{AdditionApi_HostAddress}}/
+Accept: application/json
+
+### create key-value pair
+POST {{AdditionApi_HostAddress}}/api/storage/
+Content-Type: application/json
+
+{
+  "key": "name",
+  "value": "Robin"
+}
+
+### get value by key
+GET {{AdditionApi_HostAddress}}/api/storage/{{key}}
+Accept: application/json

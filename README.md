@@ -20,7 +20,7 @@ Requirements:
   - remember “negative” tests (mentioned in Class #6 https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/MjE0Njg4NTg4MDJa/details)
   - The Api has to use a “real” database (database container, not a mock)
   - Integration testing in this context means invoking the api using its endpoints
-- Tests should be able to be executed with one command (i.e. dotnet test/npm test/etc)
+  - Tests should be able to be executed with one command (i.e. dotnet test/npm test/etc)
   - this means that the dependencies have to be setup from within the tests (database container cannot be initialized externally)
 
 Commit
