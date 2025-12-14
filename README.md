@@ -1,27 +1,26 @@
-# assign5-adding-itest
-The assignment was introduced in Class #10. In the link you can find the slides from the presentation as well as a recording of the class.
-https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/MjE3NjAxMzMwMjRa/details
+# assign4-adding-database
+The assignment was introduced in Class #8. In the link you can find the slides from the presentation as well as a recording of the class.
+https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/MjM0NjU0MTY0MTVa/details
 
-Example of integration tests. Sets up SQL server using docker.
-https://github.com/SFX-IT-Orienteringskursen-VT25/integration-test-example
+Class #9 contains my aggregated feedback on your first attempts at the assignment.
+https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/ODA3MDA5NDI3MjE5/details
+
+This simple example shows you how to setup MS SQL server in Docker from your application code
+https://github.com/SFX-IT-Orienteringskursen-VT25/setup-mssql-with-docker-example
 
 ## Instructions
-Don't start this assignment until you have finshed assignment 4!
+Don't start this assignment until you have finshed assignment 3!
 
 Clone this repository
 
-Reuse your application from assignment 4.
+Reuse your application from assignment 3.
 
 Create a branch
 
 Requirements:
-- The Api should be integration tested
-  - add “enough” tests for your endpoints
-  - remember “negative” tests (mentioned in Class #6 https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/MjE0Njg4NTg4MDJa/details)
-  - The Api has to use a “real” database (database container, not a mock)
-  - Integration testing in this context means invoking the api using its endpoints
-- Tests should be able to be executed with one command (i.e. dotnet test/npm test/etc)
-  - this means that the dependencies have to be setup from within the tests (database container cannot be initialized externally)
+- The Api should use MS SQL as the persistence layer
+- The MS SQL server should be hosted in Docker
+- The methods for saving and retrieving data should be done towards the MS SQL database
 
 Commit
 
