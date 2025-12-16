@@ -1,5 +1,13 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
+using AdditionApi.Models;
 using Xunit;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Hosting;
+
+
 
 namespace AdditionApi.IntegrationTests;
 
@@ -12,17 +20,27 @@ public class AddEndpointTests : IClassFixture<CustomWebApplicationFactory>
         _client = factory.CreateClient();
     }
 
-    [Fact(Skip = "Skipped because of VS testhost '--parentprocessid' bug on this machine.")]
-    public async Task Add_ReturnsExpectedResult()
+    [Fact]
+    public async Task SaveCalculation_ShouldReturnOk()
     {
-        var request = new { a = 2, b = 3 };
+        var calc = new Calculation
+        {
+            Operand1 = 5,
+            Operand2 = 3,
+            Operation = "+",
+            Result = 8
+        };
 
-        var response = await _client.PostAsJsonAsync("/add", request);
+        var response = await _client.PostAsJsonAsync("/Storage/SaveCalculation", calc);
 
-        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
 
-        var result = await response.Content.ReadFromJsonAsync<int>();
+    [Fact]
+    public async Task GetCalculations_ShouldReturnOk()
+    {
+        var response = await _client.GetAsync("/Storage/GetCalculations");
 
-        Assert.Equal(5, result);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }

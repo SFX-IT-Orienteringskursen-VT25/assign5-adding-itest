@@ -1,50 +1,20 @@
 using AdditionApi;
 using AdditionApi.Models;
-using System.Data.SqlClient;
+using AdditionApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Dependency Injection
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
+
 var app = builder.Build();
 
-await DockerStarter.StartDockerContainerAsync();
-Console.WriteLine("Waiting for SQL Server to start...");
-
-string connectionString = Database.GetConnectionString();
-bool connected = false;
-int retryCount = 0;
-int maxRetries = 10;
-
-while (!connected && retryCount < maxRetries)
-{
-    try
-    {
-        using var connection = new SqlConnection(connectionString);
-        await connection.OpenAsync();
-        connected = true;
-        Console.WriteLine("Database is ready.");
-    }
-    catch (SqlException)
-    {
-        retryCount++;
-        Console.WriteLine($"Retry {retryCount}/{maxRetries}: Waiting 2 seconds...");
-        await Task.Delay(2000);
-    }
-}
-
-if (!connected)
-{
-    Console.WriteLine("Failed to connect to the database after multiple attempts.");
-    return;
-}
-
-Database.CreateAndSeedDatabase(connectionString);
-Console.WriteLine("Database seeded.");
-
+// Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -53,6 +23,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseAuthorization();
-app.MapControllers(); 
+app.MapControllers();
 
 app.Run();
+
+// Required for Integration Tests
+namespace AdditionApi
+{
+    public partial class Program { }
+}

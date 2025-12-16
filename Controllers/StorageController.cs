@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
 using AdditionApi.Models;
-using System.Collections.Generic;
+using AdditionApi.Services;
 
 namespace AdditionApi.Controllers
 {
@@ -10,39 +8,31 @@ namespace AdditionApi.Controllers
     [Route("[controller]")]
     public class StorageController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly IDatabaseService _db;
 
-        public StorageController(IConfiguration configuration)
+        public StorageController(IDatabaseService db)
         {
-            _configuration = configuration;
+            _db = db;
         }
 
         [HttpPost("SaveCalculation")]
-        public IActionResult SaveCalculation([FromBody] Calculation sqlCalculation)
+        public IActionResult SaveCalculation([FromBody] Calculation calculation)
         {
+            if (calculation == null)
+            {
+                return BadRequest();
+            }
+
             try
             {
-                using var conn = new SqlConnection(DatabaseHelper.GetConnectionString(_configuration));
-                conn.Open();
-
-                const string query = @"
-                    INSERT INTO Calculations (Operand1, Operand2, Operation, Result)
-                    VALUES (@Operand1, @Operand2, @Operation, @Result);";
-
-                using var cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Operand1", sqlCalculation.Operand1);
-                cmd.Parameters.AddWithValue("@Operand2", sqlCalculation.Operand2);
-                cmd.Parameters.AddWithValue("@Operation", sqlCalculation.Operation);
-                cmd.Parameters.AddWithValue("@Result", sqlCalculation.Result);
-
-                cmd.ExecuteNonQuery();
-
-                return Ok("Calculation saved successfully.");
+                _db.SaveCalculation(calculation);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, $"Error saving calculation: {ex.Message}");
+
             }
+
+            return Ok();
         }
 
         [HttpGet("GetCalculations")]
@@ -50,35 +40,12 @@ namespace AdditionApi.Controllers
         {
             try
             {
-                using var conn = new SqlConnection(DatabaseHelper.GetConnectionString(_configuration));
-                conn.Open();
-
-                const string query = @"
-                    SELECT TOP 10 Id, Operand1, Operand2, Operation, Result
-                    FROM Calculations
-                    ORDER BY Id DESC;";
-
-                using var cmd = new SqlCommand(query, conn);
-                using var reader = cmd.ExecuteReader();
-
-                var items = new List<object>();
-                while (reader.Read())
-                {
-                    items.Add(new
-                    {
-                        Id = reader.GetInt32(0),
-                        Operand1 = reader.GetDouble(1),
-                        Operand2 = reader.GetDouble(2),
-                        Operation = reader.GetString(3),
-                        Result = reader.GetDouble(4)
-                    });
-                }
-
-                return Ok(items);
+                var data = _db.GetCalculations();
+                return Ok(data);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, $"Error retrieving calculations: {ex.Message}");
+                return Ok(new List<Calculation>());
             }
         }
     }

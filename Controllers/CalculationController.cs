@@ -1,20 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
-using AdditionApi.Models;
+using AdditionApi.Services;
 
 namespace AdditionApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] // => /api/calculation
+    [Route("api/[controller]")]
     public class CalculationController : ControllerBase
     {
+        private readonly IDatabaseService _db;
+
+        public CalculationController(IDatabaseService db)
+        {
+            _db = db;
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
             try
             {
-                string connectionString = Database.GetConnectionString();
-                var calculations = Database.GetAllCalculations(connectionString); 
+                var calculations = _db.GetCalculations();
                 return Ok(calculations);
             }
             catch (Exception ex)
