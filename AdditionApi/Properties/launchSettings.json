@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "AdditionApi.IntegrationTests": {
+    "AdditionApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:50970;http://localhost:50971"
+      "applicationUrl": "https://localhost:61854;http://localhost:61855"
     }
   }
 }
