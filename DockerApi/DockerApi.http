@@ -1,0 +1,15 @@
+@root_URL = http://localhost:5247
+
+GET {{root_URL}}/items/
+Accept: application/json
+
+###
+
+POST {{root_URL}}/items
+Content-Type: application/json
+
+{
+  "key": "name",
+  "value": "james"
+}
+
