@@ -1,0 +1,39 @@
+@AdditionApi_HostAddress = http://localhost:5262
+
+# GET /storage/{key} - Get a stored value (localStorage.getItem)
+GET {{AdditionApi_HostAddress}}/storage/myKey
+Accept: application/json
+
+###
+
+# PUT /storage/{key} - Store a value (localStorage.setItem)
+PUT {{AdditionApi_HostAddress}}/storage/myKey
+Content-Type: application/json
+
+{
+  "value": "myValue"
+}
+
+###
+
+# GET /storage/{key} - Get the stored value again
+GET {{AdditionApi_HostAddress}}/storage/myKey
+Accept: application/json
+
+###
+
+# PUT /storage/{key} - Update an existing value
+PUT {{AdditionApi_HostAddress}}/storage/myKey
+Content-Type: application/json
+
+{
+  "value": "updatedValue"
+}
+
+###
+
+# GET /storage/{key} - Get non-existent key (should return 404)
+GET {{AdditionApi_HostAddress}}/storage/nonExistentKey
+Accept: application/json
+
+###
