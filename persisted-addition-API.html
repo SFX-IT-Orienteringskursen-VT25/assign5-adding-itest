@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add and Summarize Numbers</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Add a Number and Summarize Them</h1>
+        <p>Enter a number below. The calculator will correctly summarize the numbers.</p>
+        <p><strong>Bonus improvement:</strong> Prevents adding invalid inputs.</p>
+        
+        <input type="text" id="numberInput" placeholder="Enter an integer">
+        <button id="addButton">Add Number</button>
+        
+        <div class="list">
+            <div id="numberList"></div>
+            =
+            <h3><span id="totalSum">0</span></h3>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5262/number"; 
+        const numberInput = document.getElementById('numberInput');
+        const addButton = document.getElementById('addButton');
+        const numberList = document.getElementById('numberList');
+        const totalSum = document.getElementById('totalSum');
+    
+        let enteredNumbers = [];
+        let currentSum = 0;
+    
+        // get the current sum when page open (GET)
+        window.onload = async function fetchSum() {
+            try {
+                const response = await fetch(API_URL);
+                if (response.ok) {
+                    const savedSum = await response.json();
+                    enteredNumbers = savedSum;
+                    currentSum = enteredNumbers.reduce((a, b) => a + b, 0); // update new number
+                    totalSum.textContent = currentSum;
+                    if (enteredNumbers.length > 0) {
+                // show history number sum
+                numberList.textContent = enteredNumbers.join(' + ');
+            }
+                }
+            }
+        catch (error) {
+                console.error("getting number fail:", error);
+                alert("getting number fail")};}
+
+        // when click button send number to server
+        addButton.addEventListener('click', async function () {
+            const number = numberInput.value.trim();
+            // Check if input is a valid integer (no decimals, no empty input)
+            if (!/^-?\d+$/.test(number)) { 
+                alert('Please enter a valid integer.');
+                return;
+            }
+
+            const numValue = parseInt(number, 10);
+
+            try {
+                // send to server
+                const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json' 
+                            // tell backend now we sendJSON
+                        },
+                        body: JSON.stringify({value: numValue}) 
+                    });
+
+                if (response.ok) {
+                    // update page once saving successfully
+                    currentSum = currentSum + numValue 
+                    enteredNumbers.push(numValue);
+
+                    if (enteredNumbers.length > 0) {
+                        numberList.textContent = enteredNumbers.join(' + ') + ' (new add)';
+                    }
+                    totalSum.textContent = currentSum;
+
+                    // clear input box
+                    numberInput.value = '';
+                    numberInput.focus();
+                } else {
+                    alert("server fail to save");
+                }
+
+            } catch (error) {
+                console.error("connection fail:", error);
+                alert("connection fail");
+            }
+        });
+    </script>
+</body>
+</html>
