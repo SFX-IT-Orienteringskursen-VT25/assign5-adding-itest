@@ -1,0 +1,18 @@
+@AdditionApi_HostAddress = http://localhost:5262
+
+### Get all numbers
+GET {{AdditionApi_HostAddress}}/api/Addition/NumberList
+Accept: application/json
+
+### Get total sum
+GET {{AdditionApi_HostAddress}}/api/Addition/TotalSum
+Accept: application/json
+
+### Insert a number
+POST {{AdditionApi_HostAddress}}/api/Addition
+Content-Type: application/json
+
+"42"
+
+### Delete all numbers
+DELETE {{AdditionApi_HostAddress}}/api/Addition/DeleteAll
