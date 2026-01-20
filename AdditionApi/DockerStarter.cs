@@ -70,5 +70,42 @@ public class DockerStarter
         });
         return container;
     }
+
+    public static async Task StopAndRemoveContainerAsync()
+    {
+        try
+        {
+            var dockerClient = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+
+            var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters
+            {
+                All = true
+            });
+
+            var existing = containers.FirstOrDefault(c => c.Names.Any(n => n.TrimStart('/') == "sqlserver"));
+
+            if (existing != null)
+            {
+                // Stop the container if running
+                if (existing.State == "running")
+                {
+                    await dockerClient.Containers.StopContainerAsync(existing.ID, new ContainerStopParameters
+                    {
+                        WaitBeforeKillSeconds = 10
+                    });
+                }
+
+                // Remove the container
+                await dockerClient.Containers.RemoveContainerAsync(existing.ID, new ContainerRemoveParameters
+                {
+                    Force = true
+                });
+            }
+        }
+        catch
+        {
+            // Ignore cleanup errors
+        }
+    }
 }
 }
