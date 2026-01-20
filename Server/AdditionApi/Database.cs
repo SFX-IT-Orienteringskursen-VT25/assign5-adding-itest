@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace SetupMssqlExample;
+namespace sqlapi_integrationtest;
 
 public class Database
 {

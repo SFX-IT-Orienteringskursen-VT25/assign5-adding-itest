@@ -1,36 +1,70 @@
+using Microsoft.AspNetCore.Mvc;
+using sqlapi_integrationtest; 
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+builder.Services.AddScoped<Database>(); 
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()  
-              .AllowAnyMethod()  
-              .AllowAnyHeader();  
-    });
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin() 
+                  .AllowAnyMethod()  
+                  .AllowAnyHeader();
+        });
 });
-
+builder.Services.AddScoped<Database>();
 var app = builder.Build();
 
-// Run new Cors
-app.UseCors();
 
-// Create new var in memory
-int currentNumber = 0;
-
-app.MapGet("/number", () =>
+using (var scope = app.Services.CreateScope())
 {
-    return Results.Ok(currentNumber);
-});
+    var db = scope.ServiceProvider.GetRequiredService<Database>();
+    db.Setup();
+}
 
-app.MapPost("/number", (int number) =>
-{{
-        // update new number in memory
-        currentNumber = number;
+app.UseCors("AllowAll");
+
+// API 1: GET /number
+app.MapGet("/number", ([FromServices] Database db) =>
+{
+    try 
+    {
+        var numbers = db.GetAllNumbers();
+        return Results.Ok(numbers); 
     }
-    return Results.Ok("Number received");
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
 });
 
+// API 2: POST /number
+app.MapPost("/number", ([FromBody] NumberInput input, [FromServices] Database db) =>
+{
+    try
+    {
+        int newSum = input.Value;
+        Console.WriteLine($"get input number: {newSum}");
+
+        db.InsertValue(newSum);
+
+        return Results.Ok("Saved successfully");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 app.Run();
+
+internal record NumberInput(int Value);
+
+namespace sqlapi_integrationtest
+{
+    public partial class Program { }
+}

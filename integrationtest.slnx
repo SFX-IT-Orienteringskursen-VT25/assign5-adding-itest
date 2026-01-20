@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Server/">
+    <Project Path="Server/AdditionApi/AdditionApi.csproj" />
+  </Folder>
+  <Project Path="SqlApi.IntegrationTests/SqlApi.IntegrationTests.csproj" />
+</Solution>

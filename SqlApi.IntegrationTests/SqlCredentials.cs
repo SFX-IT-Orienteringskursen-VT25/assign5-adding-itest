@@ -1,4 +1,4 @@
-﻿namespace SetupMssqlExample;
+﻿namespace sqlapi_integrationtest;
 
 public static class SqlCredentials
 {

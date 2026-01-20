@@ -4,7 +4,7 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Data.SqlClient;
 
-namespace SetupMssqlExample;
+namespace sqlapi_integrationtest;
 
 public static class DockerStarter
 {

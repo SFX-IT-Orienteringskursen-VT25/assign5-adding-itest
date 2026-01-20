@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SetupMssqlExample;
+namespace sqlapi_integrationtest;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
@@ -29,6 +29,11 @@ public class IntegrationTestFixture : IAsyncLifetime
             var db = scope.ServiceProvider.GetRequiredService<Database>();
             db.Setup();
         }
+    }
+
+    public HttpClient CreateClient()
+    {
+        return WebApplicationFactory.CreateClient();
     }
 
     public Task DisposeAsync()
