@@ -27,6 +27,23 @@ public static class Database
         createTableCommand.ExecuteNonQuery();
     }
 
+    public static void CleanupData()
+    {
+        try
+        {
+            using var sqlConnection = CreateConnection();
+            using var deleteCommand = sqlConnection.CreateCommand();
+            deleteCommand.CommandText = $@"
+                USE {DbName};
+                DELETE FROM {TableName};";
+            deleteCommand.ExecuteNonQuery();
+        }
+        catch
+        {
+            // Ignore cleanup errors if database doesn't exist
+        }
+    }
+
     
     private static SqlConnection CreateConnection()
     {

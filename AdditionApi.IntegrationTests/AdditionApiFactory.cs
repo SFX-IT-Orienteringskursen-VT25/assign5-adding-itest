@@ -32,8 +32,8 @@ public class AdditionApiFactory : IAsyncLifetime
             await _webApplicationFactory.DisposeAsync();
         }
 
-        // Stop and remove the Docker container
-        await DockerStarter.StopAndRemoveContainerAsync();
+        // Cleanup database data after tests
+        Database.CleanupData();
     }
 
     private WebApplicationFactory<Program> CreateWebApplicationFactory()
