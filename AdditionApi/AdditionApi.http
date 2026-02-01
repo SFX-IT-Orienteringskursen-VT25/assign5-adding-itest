@@ -1,0 +1,15 @@
+@AdditionApi_HostAddress = http://localhost:5262
+
+###
+
+# GET /api/addition/{key} - Get the stored value again
+GET {{AdditionApi_HostAddress}}/api/addition/Mykey
+Accept: application/json
+
+###
+
+POST /api/addition/ - POST new data stored value again
+POST {{AdditionApi_HostAddress}}/api/addition
+Accept: application/json
+
+###
