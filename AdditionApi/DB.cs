@@ -4,8 +4,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
 
 namespace AdditionApi;
+
 public static class Database
 {
+    public static string? ConnectionString { get; set; }
     private const string TableName = "Storage";
     private const string DbName = "AdditionApiDB";
 
@@ -14,19 +16,19 @@ public static class Database
         Console.WriteLine("Wait");
         var maxRetries = 5;
         var retryCount = 0;
+        var masterConnectionString = ConnectionString?.Replace(DbName, "master") ?? $"Server=localhost,1433;Database=master;User Id=sa;Password={DbCredentials.Password};TrustServerCertificate=True;";
 
         while (retryCount < maxRetries)
         {
             try
             {
-                using var sqlConnection = CreateConnection();
-                using var createDbInstruction = sqlConnection.CreateCommand();
+                using var conn = new SqlConnection(masterConnectionString);
+                await conn.OpenAsync();
 
-                createDbInstruction.CommandText = $"IF DB_ID('{DbName}') IS NULL CREATE DATABASE {DbName};";
-                createDbInstruction.ExecuteNonQuery();
-
-                using var createDataTable = sqlConnection.CreateCommand();
-                createDataTable.CommandText = $@"
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = $@"
+                IF DB_ID('{DbName}') IS NULL CREATE DATABASE {DbName};
+                GO
                 USE {DbName};
                 IF OBJECT_ID(N'{TableName}', N'U') IS NULL
                 BEGIN
@@ -35,20 +37,34 @@ public static class Database
                         [Value] VARCHAR(MAX) NOT NULL
                     );
                 END";
-                createDataTable.ExecuteNonQuery();
 
-                Console.WriteLine("DB created");
+                cmd.CommandText = $"IF DB_ID('{DbName}') IS NULL CREATE DATABASE {DbName};";
+                await cmd.ExecuteNonQueryAsync();
+
+                using var tableConn = CreateConnection();
+                using var tableCmd = tableConn.CreateCommand();
+                tableCmd.CommandText = $@"
+                    IF OBJECT_ID(N'{TableName}', N'U') IS NULL
+                    BEGIN
+                        CREATE TABLE {TableName} (
+                            [Key] VARCHAR(255) PRIMARY KEY,
+                            [Value] VARCHAR(MAX) NOT NULL
+                        );
+                    END";
+                await tableCmd.ExecuteNonQueryAsync();
+
+                Console.WriteLine("DB and Table verified.");
                 return;
             }
-            catch (SqlException) when (retryCount < maxRetries -1)
+            catch (SqlException ex) when (retryCount < maxRetries -1)
             {
                 retryCount++;
-                Console.WriteLine($"DB is not ready. Attemps: {retryCount}/{maxRetries}. Please, wait");
+                Console.WriteLine($"DB is not ready. Attemps: {retryCount}. Error: {ex.Message}");
                 await Task.Delay(2000);
             }
             
         }
-        throw new Exception("DB failed to start");
+        throw new Exception("SQL was not ready in time");
     }
 
     public static void Clear()
@@ -109,7 +125,9 @@ public static class Database
 
     private static SqlConnection CreateConnection()
     {
-        var sqlConnection = new SqlConnection($"Server=localhost,1433;Database={DbName};User Id=sa;Password={DbCredentials.Password};TrustServerCertificate=True;");
+        var connStr = ConnectionString ?? $"Server=localhost,1433;Database={DbName};User Id=sa;Password={DbCredentials.Password};TrustServerCertificate=True;";
+        
+        var sqlConnection = new SqlConnection(connStr);
         sqlConnection.Open();
 
         return sqlConnection;

@@ -3,9 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+Database.ConnectionString = connectionString;
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
 await Database.SetupAsync();
 
 if (app.Environment.IsDevelopment())
@@ -37,7 +42,7 @@ app.MapPost("/api/addition", async ([FromBody] StorageData storageData) =>
     
     if (isExistedKey)
     {
-        return Results.BadRequest(StatusCodes.Status400BadRequest);
+        return Results.BadRequest(new { message = "Key already exists" });
     }
     
     await Database.SetValue(storageData.Key,storageData.Value);
