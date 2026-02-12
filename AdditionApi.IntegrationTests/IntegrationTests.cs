@@ -15,23 +15,45 @@ public class AdditionControllerIntegrationTests : IClassFixture<AdditionApiFacto
     [Fact]
     public async Task GetNumbers_ReturnsOkResult()
     {
+        // Arrange - Clear database and insert known values
+        await _client.DeleteAsync("/api/Addition/DeleteAll");
+        await _client.PostAsJsonAsync("/api/Addition", "10");
+        await _client.PostAsJsonAsync("/api/Addition", "20");
+        await _client.PostAsJsonAsync("/api/Addition", "30");
+
         // Act
         var response = await _client.GetAsync("/api/Addition/NumberList");
 
         // Assert
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        
+        var numbers = await response.Content.ReadFromJsonAsync<List<int>>();
+        Assert.NotNull(numbers);
+        Assert.Equal(3, numbers.Count);
+        Assert.Contains(10, numbers);
+        Assert.Contains(20, numbers);
+        Assert.Contains(30, numbers);
     }
 
     [Fact]
     public async Task GetTotal_ReturnsOkResult()
     {
+        // Arrange - Clear database and insert known values
+        await _client.DeleteAsync("/api/Addition/DeleteAll");
+        await _client.PostAsJsonAsync("/api/Addition", "10");
+        await _client.PostAsJsonAsync("/api/Addition", "20");
+        await _client.PostAsJsonAsync("/api/Addition", "30");
+
         // Act
         var response = await _client.GetAsync("/api/Addition/TotalSum");
 
         // Assert
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        
+        var total = await response.Content.ReadFromJsonAsync<int>();
+        Assert.Equal(60, total);
     }
 
     [Fact]
