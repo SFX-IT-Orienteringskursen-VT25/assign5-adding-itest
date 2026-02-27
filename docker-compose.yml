@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  sqldb:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: sqldb-dev
+    environment:
+      ACCEPT_EULA: "1"
+      MSSQL_SA_PASSWORD: "password123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+
+volumes:
+  sqldata:
