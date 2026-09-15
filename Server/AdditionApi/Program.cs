@@ -53,3 +53,4 @@ app.MapGet("/storage/{key}", async (string key, AppDbContext db) =>
 
 app.Run();
 
+public partial class Program { }
