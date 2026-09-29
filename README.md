@@ -1,4 +1,5 @@
 # assign5-adding-itest
+
 The assignment was introduced in Class #10. In the link you can find the slides from the presentation as well as a recording of the class.
 https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/MjE3NjAxMzMwMjRa/details
 
@@ -6,6 +7,7 @@ Example of integration tests. Sets up SQL server using docker.
 https://github.com/SFX-IT-Orienteringskursen-VT25/integration-test-example
 
 ## Instructions
+
 Don't start this assignment until you have finshed assignment 4!
 
 Clone this repository
@@ -15,6 +17,7 @@ Reuse your application from assignment 4.
 Create a branch
 
 Requirements:
+
 - The Api should be integration tested
   - add “enough” tests for your endpoints
   - remember “negative” tests (mentioned in Class #6 https://classroom.google.com/c/MjI5OTg3MzMwODFa/p/MjE0Njg4NTg4MDJa/details)
@@ -30,3 +33,13 @@ Push your branch
 Create a pull request `<your branch> => <main>`
 
 Done!
+
+## Running the tests
+
+Requires the .NET 7 SDK and a running Docker daemon. The tests start their own SQL Server
+container (via [Testcontainers](https://dotnet.testcontainers.org/)), so nothing needs to be set up beforehand:
+
+```bash
+cd Server
+dotnet test
+```
